@@ -95,4 +95,14 @@ public class CourseRepository
         command.Parameters.AddWithValue("id", course.CourseId);
         return await command.ExecuteNonQueryAsync() > 0;      // rows changed
     }
+
+    // DELETE: the database refuses (23503) while the course still has projects.
+    public async Task DeleteAsync(long id)
+    {
+        const string sql = "DELETE FROM portfolio.course WHERE course_id = @id;";
+
+        await using var command = _dataSource.CreateCommand(sql);
+        command.Parameters.AddWithValue("id", id);
+        await command.ExecuteNonQueryAsync();
+    }
 }
