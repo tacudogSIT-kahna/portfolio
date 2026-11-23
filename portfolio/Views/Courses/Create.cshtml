@@ -1,0 +1,50 @@
+﻿@model Course
+@{
+    ViewData["Title"] = "Add a course";
+}
+
+<h1 class="mb-3">Add a course</h1>
+
+<form asp-action="Create" method="post" class="card card-body form-card" style="max-width:38rem">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+    <div class="mb-3">
+        <label asp-for="Code" class="form-label">Course code</label>
+        <input asp-for="Code" class="form-control" placeholder="IT 205" />
+        <span asp-validation-for="Code" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label">Course title</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-4 mb-3">
+            <label asp-for="Units" class="form-label"></label>
+            <input asp-for="Units" class="form-control" />
+            <span asp-validation-for="Units" class="text-danger"></span>
+        </div>
+        <div class="col-8 mb-3">
+            <label asp-for="TermTaken" class="form-label">Term taken</label>
+            <input asp-for="TermTaken" class="form-control" placeholder="1st Sem SY 2026-2027" />
+            <span asp-validation-for="TermTaken" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-action="Index" class="btn btn-link">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

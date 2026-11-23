@@ -50,4 +50,19 @@ public class CourseRepository
         }
         return courses;
     }
+
+    // CREATE: the database chooses course_id.
+    public async Task AddAsync(Course course)
+    {
+        const string sql = "INSERT INTO portfolio.course (code, title, units, term_taken, description) " +
+                           "VALUES (@code, @title, @units, @term_taken, @description);";
+
+        await using var command = _dataSource.CreateCommand(sql);
+        command.Parameters.AddWithValue("code", course.Code);
+        command.Parameters.AddWithValue("title", course.Title);
+        command.Parameters.AddWithValue("units", course.Units);
+        command.Parameters.AddWithValue("term_taken", course.TermTaken);
+        command.Parameters.AddWithValue("description", (object?)course.Description ?? DBNull.Value);
+        await command.ExecuteNonQueryAsync();
+    }
 }
