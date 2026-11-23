@@ -1,0 +1,41 @@
+﻿@model List<Course>
+@{
+    ViewData["Title"] = "Courses (editor)";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="mb-0">Courses</h1>
+        <p class="text-muted mb-0">@Model.Count courses</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">Add a course</a>
+</div>
+
+<table class="table table-striped table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Code</th>
+            <th>Title</th>
+            <th class="text-end">Units</th>
+            <th>Term taken</th>
+            <th class="text-end">Projects</th>
+            <th style="width:10rem"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td><span class="code-badge">@c.Code</span></td>
+                <td>@c.Title</td>
+                <td class="text-end">@c.Units</td>
+                <td>@c.TermTaken</td>
+                <td class="text-end">@c.ProjectCount</td>
+                <td class="text-end">
+                    <a asp-action="Edit" asp-route-id="@c.CourseId" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@c.CourseId" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
