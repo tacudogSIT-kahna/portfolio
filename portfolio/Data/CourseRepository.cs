@@ -65,4 +65,34 @@ public class CourseRepository
         command.Parameters.AddWithValue("description", (object?)course.Description ?? DBNull.Value);
         await command.ExecuteNonQueryAsync();
     }
+
+    // READ: one course, or null when no course has that id.
+    public async Task<Course?> GetByIdAsync(long id)
+    {
+        const string sql = SelectCourses + "WHERE c.course_id = @id GROUP BY c.course_id;";
+
+        await using var command = _dataSource.CreateCommand(sql);
+        command.Parameters.AddWithValue("id", id);
+
+        await using var reader = await command.ExecuteReaderAsync();
+        return await reader.ReadAsync() ? ReadCourse(reader) : null;
+    }
+
+    // UPDATE: returns false when no course has that id.
+    public async Task<bool> UpdateAsync(Course course)
+    {
+        const string sql = "UPDATE portfolio.course " +
+                           "SET code = @code, title = @title, units = @units, " +
+                           "    term_taken = @term_taken, description = @description " +
+                           "WHERE course_id = @id;";
+
+        await using var command = _dataSource.CreateCommand(sql);
+        command.Parameters.AddWithValue("code", course.Code);
+        command.Parameters.AddWithValue("title", course.Title);
+        command.Parameters.AddWithValue("units", course.Units);
+        command.Parameters.AddWithValue("term_taken", course.TermTaken);
+        command.Parameters.AddWithValue("description", (object?)course.Description ?? DBNull.Value);
+        command.Parameters.AddWithValue("id", course.CourseId);
+        return await command.ExecuteNonQueryAsync() > 0;      // rows changed
+    }
 }
