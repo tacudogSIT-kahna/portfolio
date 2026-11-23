@@ -1,50 +1,79 @@
-﻿<!DOCTYPE html>
+﻿@{
+    // Which side are we on? The three editor controllers are the editor side; everything else is the viewer side.
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var inEditor = controller is "Courses" or "Projects" or "Images";
+    var signedIn = User.Identity?.IsAuthenticated == true;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - portfolio</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] · Kahna's Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/portfolio.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">portfolio</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+<body class="@(inEditor ? "side-editor" : "side-viewer")">
+    <header class="site-header">
+        <nav class="navbar navbar-expand-md">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Portfolio" asp-action="Index">
+                    <span class="brand-mark">KN</span> Kahna's Portfolio
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
+                        aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                <div class="collapse navbar-collapse" id="nav">
+                    <ul class="navbar-nav me-auto">
+                        @if (inEditor)
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Courses" asp-action="Index">Courses</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Projects" asp-action="Index">Projects</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Portfolio" asp-action="Index">Courses</a></li>
+                        }
                     </ul>
+
+                    @* The link that switches between the two sides *@
+                    <div class="d-flex align-items-center gap-2">
+                        @if (inEditor)
+                        {
+                            <span class="mode-pill mode-editor">Editor mode</span>
+                            <a class="btn btn-sm btn-outline-light" asp-controller="Portfolio" asp-action="Index">Switch to viewer</a>
+                        }
+                        else
+                        {
+                            <span class="mode-pill mode-viewer">Viewer mode</span>
+                            <a class="btn btn-sm btn-light" asp-controller="Courses" asp-action="Index">Switch to editor</a>
+                        }
+                        @if (signedIn)
+                        {
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="m-0">
+                                <button type="submit" class="btn btn-sm btn-link text-white-50">Sign out</button>
+                            </form>
+                        }
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - portfolio - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
+    <main class="container py-4">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">Kahna Nyza M. Tacudog · BSIT 2 · IDA9 · Built with ASP.NET Core MVC and Supabase</div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

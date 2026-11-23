@@ -1,31 +1,257 @@
+/* Kahna's Portfolio: warm paper, deep teal, coral accents. One look for every page. */
+:root {
+    --ink: #1f2a37;
+    --muted: #6b7280;
+    --paper: #faf6ef;
+    --card: #ffffff;
+    --sand: #efe7d8;
+    --teal: #0e7c6b;
+    --teal-dark: #0a5c50;
+    --coral: #e4572e;
+    --gold: #f2b84b;
+    --radius: 14px;
+}
+
 html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    margin-bottom: 70px;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+h1, h2, h3, .brand-font {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* ---- header: teal for the viewer, ink for the editor, so you always know which side you are on ---- */
+.site-header {
+    background: var(--teal);
+}
+
+.side-editor .site-header {
+    background: var(--ink);
+}
+
+.navbar .navbar-brand {
+    color: #fff;
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 700;
+}
+
+.navbar .nav-link {
+    color: rgba(255,255,255,.85);
+}
+
+    .navbar .nav-link:hover {
+        color: #fff;
+    }
+
+.navbar-toggler {
+    border-color: rgba(255,255,255,.5);
+}
+
+.navbar-toggler-icon {
+    filter: invert(1);
+}
+
+.brand-mark {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--ink);
+    border-radius: 8px;
+    padding: 0 .45rem;
+    margin-right: .35rem;
+    font-size: .95rem;
+}
+
+.mode-pill {
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    padding: .2rem .6rem;
+    border-radius: 999px;
+}
+
+.mode-viewer {
+    background: rgba(255,255,255,.18);
+    color: #fff;
+}
+
+.mode-editor {
+    background: var(--coral);
+    color: #fff;
+}
+
+.site-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    line-height: 50px;
+    text-align: center;
+    color: var(--muted);
+    font-size: .85rem;
+}
+
+/* ---- hero ---- */
+.hero {
+    background: linear-gradient(135deg, var(--sand), #fff);
+    border-radius: var(--radius);
+    padding: 2.2rem 2rem;
+    margin-bottom: 1.8rem;
+    border: 1px solid rgba(0,0,0,.05);
+}
+
+    .hero h1 {
+        font-size: 2.3rem;
+        margin-bottom: .3rem;
+    }
+
+    .hero p {
+        color: var(--muted);
+        max-width: 40rem;
+        margin-bottom: 1rem;
+    }
+
+/* ---- cards ---- */
+.pcard {
+    background: var(--card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    height: 100%;
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    transition: transform .15s ease, box-shadow .15s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+    .pcard:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 24px rgba(0,0,0,.08);
+    }
+
+    .pcard .body {
+        padding: 1.1rem 1.2rem;
+        flex: 1;
+    }
+
+    .pcard .cover {
+        aspect-ratio: 16 / 9;
+        width: 100%;
+        object-fit: cover;
+        background: var(--sand);
+        display: block;
+    }
+
+    .pcard .cover-empty {
+        aspect-ratio: 16 / 9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: repeating-linear-gradient(45deg, var(--sand), var(--sand) 12px, #f6efe2 12px, #f6efe2 24px);
+        color: var(--muted);
+        font-size: .85rem;
+    }
+
+.code-badge {
+    background: var(--teal);
+    color: #fff;
+    border-radius: 8px;
+    padding: .15rem .55rem;
+    font-size: .8rem;
+    font-weight: 700;
+}
+
+.chip {
+    display: inline-block;
+    background: var(--sand);
+    border-radius: 999px;
+    padding: .1rem .65rem;
+    font-size: .78rem;
+    margin: 0 .25rem .25rem 0;
+}
+
+a.stretched {
+    color: inherit;
+    text-decoration: none;
+}
+
+.meta {
+    color: var(--muted);
+    font-size: .85rem;
+}
+
+/* ---- project page ---- */
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+}
+
+    .gallery img {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        border-radius: 12px;
+        border: 1px solid rgba(0,0,0,.08);
+        background: var(--sand);
+    }
+
+/* ---- buttons, forms, tables ---- */
+.btn-primary {
+    background: var(--teal);
+    border-color: var(--teal);
+}
+
+    .btn-primary:hover {
+        background: var(--teal-dark);
+        border-color: var(--teal-dark);
+    }
+
+.side-editor .btn-primary {
+    background: var(--coral);
+    border-color: var(--coral);
+}
+
+    .side-editor .btn-primary:hover {
+        background: #c7421d;
+        border-color: #c7421d;
+    }
+
+.card.form-card {
+    border-radius: var(--radius);
+    border: 1px solid rgba(0,0,0,.07);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 .2rem rgba(14,124,107,.18);
+}
+
+.table thead.table-dark {
+    --bs-table-bg: var(--ink);
+}
+
+.thumb {
+    width: 72px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: var(--sand);
+}
+
+.text-danger, .field-validation-error {
+    color: #b42318 !important;
+}
+
+.validation-summary-errors ul {
+    margin: 0;
+    padding-left: 1.1rem;
 }
