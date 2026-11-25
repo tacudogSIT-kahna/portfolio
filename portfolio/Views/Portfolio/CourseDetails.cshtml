@@ -1,0 +1,31 @@
+﻿@model Course
+@{
+    ViewData["Title"] = Model.Code;
+    var projects = (List<Project>)ViewBag.Projects;
+}
+
+<nav class="meta mb-3"><a asp-action="Index">Courses</a> / @Model.Code</nav>
+
+<section class="hero">
+    <span class="code-badge">@Model.Code</span>
+    <h1 class="mt-2">@Model.Title</h1>
+    <p class="mb-1">@(Model.Description ?? "No description yet.")</p>
+    <p class="meta mb-0">@Model.Units units · taken in @Model.TermTaken</p>
+</section>
+
+<h2 class="h4 mb-3">Projects <span class="meta">(@projects.Count)</span></h2>
+@if (projects.Count == 0)
+{
+    <p class="text-muted">No projects in this course yet.</p>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var p in projects)
+        {
+            <div class="col-md-6 col-lg-4">
+                <partial name="_ProjectCard" model="p" />
+            </div>
+        }
+    </div>
+}

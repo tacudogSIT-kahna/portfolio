@@ -1,0 +1,45 @@
+﻿@model Project
+@{
+    ViewData["Title"] = Model.Title;
+    var images = (List<ProjectImage>)ViewBag.Images;
+
+    // Turn a YouTube link into the address of an embeddable player.
+    var videoId = System.Text.RegularExpressions.Regex.Match(Model.VideoUrl ?? "",
+        @"(?:v=|youtu\.be/|shorts/)([A-Za-z0-9_-]{11})").Groups[1].Value;
+}
+
+<nav class="meta mb-3">
+    <a asp-action="Index">Courses</a> /
+    <a asp-action="CourseDetails" asp-route-id="@Model.CourseId">@Model.CourseCode</a> / @Model.Title
+</nav>
+
+<section class="hero">
+    <span class="code-badge">@Model.CourseCode</span>
+    <span class="meta ms-2">@Model.CourseTitle</span>
+    <h1 class="mt-2">@Model.Title</h1>
+    <p class="mb-2">@(Model.Summary ?? "No summary yet.")</p>
+    <p class="meta mb-0">Finished @(Model.CompletedOn?.ToString("MMMM d, yyyy"))</p>
+</section>
+
+@if (videoId != "")
+{
+    <h2 class="h4 mb-3">Demo video</h2>
+    <div class="ratio ratio-16x9 mb-4" style="max-width:720px">
+        <iframe src="https://www.youtube.com/embed/@videoId" title="Project demo" allowfullscreen></iframe>
+    </div>
+}
+
+<h2 class="h4 mb-3">Screenshots <span class="meta">(@images.Count)</span></h2>
+@if (images.Count == 0)
+{
+    <p class="text-muted">No images yet.</p>
+}
+else
+{
+    <div class="gallery">
+        @foreach (var img in images)
+        {
+            <a href="@img.ImageUrl" target="_blank" rel="noopener"><img src="@img.ImageUrl" alt="Image of @Model.Title" loading="lazy" /></a>
+        }
+    </div>
+}

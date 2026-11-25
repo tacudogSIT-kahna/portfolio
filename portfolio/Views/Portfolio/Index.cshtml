@@ -1,0 +1,56 @@
+﻿@model List<Course>
+@{
+    ViewData["Title"] = "Courses";
+    var results = ViewBag.Results as List<Project>;
+    string? query = ViewBag.Query as string;
+}
+
+<section class="hero">
+    <h1>Courses I have taken, and what I built in them</h1>
+    <p>A portfolio of my BSIT courses and the projects I made in each one: screenshots and demo videos.</p>
+    <form method="get" asp-action="Index" class="d-flex gap-2" style="max-width:30rem">
+        <input name="q" value="@query" class="form-control" placeholder="Search projects or summaries" maxlength="60" />
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</section>
+
+@if (results != null)
+{
+    <h2 class="h4 mb-3">Search results for “@query” <span class="meta">(@results.Count)</span></h2>
+    @if (results.Count == 0)
+    {
+        <p class="text-muted">No project matches. <a asp-action="Index">Clear the search</a>.</p>
+    }
+    else
+    {
+        <div class="row g-3 mb-4">
+            @foreach (var p in results)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <partial name="_ProjectCard" model="p" />
+                </div>
+            }
+        </div>
+    }
+    <hr class="my-4" />
+}
+
+<h2 class="h4 mb-3">All courses <span class="meta">(@Model.Count)</span></h2>
+<div class="row g-3">
+    @foreach (var c in Model)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="pcard">
+                <div class="body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="code-badge">@c.Code</span>
+                        <span class="meta">@c.Units units</span>
+                    </div>
+                    <h3 class="h5"><a class="stretched" asp-action="CourseDetails" asp-route-id="@c.CourseId">@c.Title</a></h3>
+                    <p class="meta mb-2">@c.TermTaken</p>
+                    <p class="mb-0">@(c.ProjectCount == 1 ? "1 project" : $"{c.ProjectCount} projects")</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

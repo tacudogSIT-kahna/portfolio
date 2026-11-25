@@ -1,0 +1,19 @@
+﻿@model Project
+
+<div class="pcard">
+    @if (Model.CoverUrl != null)
+    {
+        <img class="cover" src="@Model.CoverUrl" alt="Screenshot of @Model.Title" loading="lazy" />
+    }
+    else
+    {
+        <div class="cover-empty">No images yet</div>
+    }
+    <div class="body">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="code-badge">@Model.CourseCode</span>
+            <span class="meta">@(Model.CompletedOn?.ToString("MMM yyyy"))</span>
+        </div>
+        <h3 class="h5 mb-1"><a class="stretched" asp-controller="Portfolio" asp-action="ProjectDetails" asp-route-id="@Model.ProjectId">@Model.Title</a></h3>
+    </div>
+</div>
