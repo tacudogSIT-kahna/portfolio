@@ -40,7 +40,7 @@ public class ProjectsController : Controller
     public async Task<IActionResult> Create()
     {
         await FillDropdownsAsync();
-        return View(new Project { CompletedOn = DateOnly.FromDateTime(DateTime.Today) });
+        return View(new Project { StartedOn = DateOnly.FromDateTime(DateTime.Today) });
     }
 
     // POST /Projects/Create : the project and its images are saved in ONE transaction.
@@ -59,22 +59,20 @@ public class ProjectsController : Controller
             var id = await _projects.AddWithImagesAsync(project, ImageLines.Split(project.ImageUrls));
             return RedirectToAction("ProjectDetails", "Portfolio", new { id });
         }
-        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation)          // 23505
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.CheckViolation
+                                    && ex.ConstraintName == "chk_project_started")
         {
-            ModelState.AddModelError("ImageUrls", "The same image URL appears more than once. Nothing was saved.");
-        }
-        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.ForeignKeyViolation)      // 23503
-        {
-            ModelState.AddModelError("CourseId", "That course no longer exists. Nothing was saved.");
+            ModelState.AddModelError("StartedOn", "The start date cannot be in the future. Nothing was saved.");
         }
         catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.CheckViolation
-                                           && ex.ConstraintName == "chk_project_completed")            // 23514
+                                           && ex.ConstraintName == "chk_project_ended")
         {
-            ModelState.AddModelError("CompletedOn", "A project cannot be dated in the future. Nothing was saved.");
+            ModelState.AddModelError("EndedOn", "The end date cannot be in the future. Nothing was saved.");
         }
-        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.CheckViolation)           // chk_image_url
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.CheckViolation
+                                           && ex.ConstraintName == "chk_project_dates")
         {
-            ModelState.AddModelError("ImageUrls", "The database refused an image URL: it must start with http:// or https://. Nothing was saved.");
+            ModelState.AddModelError("EndedOn", "The end date cannot be before the start date. Nothing was saved.");
         }
 
         await FillDropdownsAsync();
@@ -116,22 +114,20 @@ public class ProjectsController : Controller
             }
             return RedirectToAction("ProjectDetails", "Portfolio", new { id = project.ProjectId });
         }
-        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.UniqueViolation)
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.CheckViolation
+                                   && ex.ConstraintName == "chk_project_started")
         {
-            ModelState.AddModelError("ImageUrls", "The same image URL appears more than once. Nothing was saved.");
-        }
-        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.ForeignKeyViolation)
-        {
-            ModelState.AddModelError("CourseId", "That course no longer exists. Nothing was saved.");
+            ModelState.AddModelError("StartedOn", "The start date cannot be in the future. Nothing was saved.");
         }
         catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.CheckViolation
-                                           && ex.ConstraintName == "chk_project_completed")
+                                           && ex.ConstraintName == "chk_project_ended")
         {
-            ModelState.AddModelError("CompletedOn", "A project cannot be dated in the future. Nothing was saved.");
+            ModelState.AddModelError("EndedOn", "The end date cannot be in the future. Nothing was saved.");
         }
-        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.CheckViolation)
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.CheckViolation
+                                           && ex.ConstraintName == "chk_project_dates")
         {
-            ModelState.AddModelError("ImageUrls", "The database refused an image URL: it must start with http:// or https://. Nothing was saved.");
+            ModelState.AddModelError("EndedOn", "The end date cannot be before the start date. Nothing was saved.");
         }
 
         await FillDropdownsAsync();

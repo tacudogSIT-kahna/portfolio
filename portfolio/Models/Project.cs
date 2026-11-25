@@ -22,7 +22,13 @@ public class Project
     public string? VideoUrl { get; set; }                   // video_url     VARCHAR(200), may be NULL
 
     [Required(ErrorMessage = "Choose the date you finished it.")]
-    public DateOnly? CompletedOn { get; set; }              // completed_on  DATE NOT NULL (the database refuses a future date)
+    [Required(ErrorMessage = "Choose the date you started it.")]
+    public DateOnly? StartedOn { get; set; }                // started_on    DATE NOT NULL
+
+    public DateOnly? EndedOn { get; set; }                  // ended_on      DATE, may be NULL = still ongoing
+
+    [StringLength(4000, ErrorMessage = "The notes can be at most 4000 characters.")]
+    public string? Notes { get; set; }                      // notes         TEXT, may be NULL (the notepad)
 
     // ---- Not columns of this table: filled by the join, or used only by the form ----
     public string? CourseCode { get; set; }                 // from portfolio.course

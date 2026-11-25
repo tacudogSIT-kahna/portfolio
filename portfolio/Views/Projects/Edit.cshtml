@@ -29,11 +29,16 @@
         <span asp-validation-for="Summary" class="text-danger"></span>
     </div>
 
-    <div class="row">
+       <div class="row">
         <div class="col-md-6 mb-3">
-            <label asp-for="CompletedOn" class="form-label">Finished on</label>
-            <input asp-for="CompletedOn" type="date" value="@(Model.CompletedOn?.ToString("yyyy-MM-dd"))" class="form-control" />
-            <span asp-validation-for="CompletedOn" class="text-danger"></span>
+            <label asp-for="StartedOn" class="form-label">Date started</label>
+            <input asp-for="StartedOn" type="date" value="@(Model.StartedOn?.ToString("yyyy-MM-dd"))" class="form-control" />
+            <span asp-validation-for="StartedOn" class="text-danger"></span>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="EndedOn" class="form-label">Date ended <span class="text-muted">(leave empty if ongoing)</span></label>
+            <input asp-for="EndedOn" type="date" value="@(Model.EndedOn?.ToString("yyyy-MM-dd"))" class="form-control" />
+            <span asp-validation-for="EndedOn" class="text-danger"></span>
         </div>
     </div>
 
@@ -41,6 +46,13 @@
         <label asp-for="VideoUrl" class="form-label">Demo video (YouTube link)</label>
         <input asp-for="VideoUrl" class="form-control" placeholder="https://youtu.be/abcdefghijk" />
         <span asp-validation-for="VideoUrl" class="text-danger"></span>
+    </div>
+
+        <div class="mb-3">
+        <label asp-for="Notes" class="form-label">Notes (private notepad)</label>
+        <textarea asp-for="Notes" class="form-control notes-input" rows="6"
+                  placeholder="What you learned, problems you solved, ideas to improve..."></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
     </div>
 
     <div class="mb-3">

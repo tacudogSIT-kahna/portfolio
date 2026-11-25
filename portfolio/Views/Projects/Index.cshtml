@@ -16,7 +16,7 @@
         <tr>
             <th>Project</th>
             <th>Course</th>
-            <th>Finished</th>
+            <th>Started</th><th>Ended</th>
             <th class="text-end">Images</th>
             <th>Video</th>
             <th style="width:16rem"></th>
@@ -28,7 +28,8 @@
             <tr>
                 <td>@p.Title</td>
                 <td><span class="code-badge">@p.CourseCode</span></td>
-                <td>@(p.CompletedOn?.ToString("yyyy-MM-dd"))</td>
+                <td>@(p.StartedOn?.ToString("yyyy-MM-dd"))</td>
+                <td>@(p.EndedOn?.ToString("yyyy-MM-dd") ?? "Ongoing")</td>
                 <td class="text-end">@p.ImageCount</td>
                 <td>@(string.IsNullOrEmpty(p.VideoUrl) ? "—" : "Yes")</td>
                 <td class="text-end">

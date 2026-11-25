@@ -18,8 +18,14 @@
     <span class="meta ms-2">@Model.CourseTitle</span>
     <h1 class="mt-2">@Model.Title</h1>
     <p class="mb-2">@(Model.Summary ?? "No summary yet.")</p>
-    <p class="meta mb-0">Finished @(Model.CompletedOn?.ToString("MMMM d, yyyy"))</p>
+    <p class="meta mb-0">@(Model.StartedOn?.ToString("MMMM d, yyyy")) – @(Model.EndedOn?.ToString("MMMM d, yyyy") ?? "Present")</p>
 </section>
+
+@if (User.Identity?.IsAuthenticated == true && !string.IsNullOrWhiteSpace(Model.Notes))
+{
+    <h2 class="h4 mb-3">Notes <span class="meta">(only you can see this)</span></h2>
+    <div class="notes-pad mb-4">@Model.Notes</div>
+}
 
 @if (videoId != "")
 {

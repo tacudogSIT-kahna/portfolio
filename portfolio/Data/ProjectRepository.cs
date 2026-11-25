@@ -19,7 +19,7 @@ public class ProjectRepository
     //  0 project_id  1 course_id  2 title  3 summary  4 video_url  5 completed_on
     //  6 course code  7 course title  8 image count  9 cover image (the first image, or NULL)
     private const string SelectProjects =
-        "SELECT p.project_id, p.course_id, p.title, p.summary, p.video_url, p.completed_on, " +
+        "SELECT p.project_id, p.course_id, p.title, p.summary, p.video_url, p.started_on, p.ended_on, p.notes,  " +
         "       c.code, c.title, COUNT(i.image_id), " +
         "       (SELECT i2.image_url FROM portfolio.project_image i2 " +
         "        WHERE i2.project_id = p.project_id ORDER BY i2.image_id LIMIT 1) " +
@@ -38,11 +38,13 @@ public class ProjectRepository
             Title = reader.GetString(2),
             Summary = reader.IsDBNull(3) ? null : reader.GetString(3),
             VideoUrl = reader.IsDBNull(4) ? null : reader.GetString(4),
-            CompletedOn = reader.GetFieldValue<DateOnly>(5),
-            CourseCode = reader.GetString(6),
-            CourseTitle = reader.GetString(7),
-            ImageCount = reader.GetInt64(8),
-            CoverUrl = reader.IsDBNull(9) ? null : reader.GetString(9)
+            StartedOn = reader.GetFieldValue<DateOnly>(5),
+            EndedOn = reader.IsDBNull(6) ? null : reader.GetFieldValue<DateOnly>(6),
+            Notes = reader.IsDBNull(7) ? null : reader.GetString(7),
+            CourseCode = reader.GetString(8),
+            CourseTitle = reader.GetString(9),
+            ImageCount = reader.GetInt64(10),
+            CoverUrl = reader.IsDBNull(11) ? null : reader.GetString(11)
         };
     }
 
@@ -60,7 +62,7 @@ public class ProjectRepository
     // READ: every project, newest first.
     public async Task<List<Project>> GetAllAsync()
     {
-        const string sql = SelectProjects + GroupBy + "ORDER BY p.completed_on DESC, p.project_id DESC;";
+        const string sql = SelectProjects + GroupBy + "ORDER BY p.started_on DESC, p.project_id DESC;";
         await using var command = _dataSource.CreateCommand(sql);
         return await ReadListAsync(command);
     }
@@ -69,7 +71,7 @@ public class ProjectRepository
     public async Task<List<Project>> GetByCourseAsync(long courseId)
     {
         const string sql = SelectProjects + "WHERE p.course_id = @course_id " + GroupBy +
-                           "ORDER BY p.completed_on DESC, p.project_id DESC;";
+                           "ORDER BY p.started_on DESC, p.project_id DESC;";
         await using var command = _dataSource.CreateCommand(sql);
         command.Parameters.AddWithValue("course_id", courseId);
         return await ReadListAsync(command);
@@ -104,7 +106,9 @@ public class ProjectRepository
         command.Parameters.AddWithValue("title", project.Title);
         command.Parameters.AddWithValue("summary", (object?)project.Summary ?? DBNull.Value);
         command.Parameters.AddWithValue("video_url", (object?)project.VideoUrl ?? DBNull.Value);
-        command.Parameters.AddWithValue("completed_on", project.CompletedOn!.Value);
+        command.Parameters.AddWithValue("started_on", project.StartedOn!.Value);
+        command.Parameters.AddWithValue("ended_on", (object?)project.EndedOn ?? DBNull.Value);
+        command.Parameters.AddWithValue("notes", (object?)project.Notes ?? DBNull.Value);
     }
 
     // CREATE: a project AND its images, inside ONE transaction.
@@ -120,8 +124,8 @@ public class ProjectRepository
         {
             long newId;
             await using (var insert = new NpgsqlCommand(
-                "INSERT INTO portfolio.project (course_id, title, summary, video_url, completed_on) " +
-                "VALUES (@course_id, @title, @summary, @video_url, @completed_on) " +
+                "INSERT INTO portfolio.project (course_id, title, summary, video_url, started_on, ended_on, notes) " +
+                "VALUES (@course_id, @title, @summary, @video_url, @started_on, @ended_on, @notes) " +
                 "RETURNING project_id;", connection, transaction))
             {
                 AddProjectParameters(insert, project);
@@ -157,7 +161,7 @@ public class ProjectRepository
             await using (var update = new NpgsqlCommand(
                 "UPDATE portfolio.project " +
                 "SET course_id = @course_id, title = @title, summary = @summary, " +
-                "    video_url = @video_url, completed_on = @completed_on " +
+                "    video_url = @video_url, started_on = @started_on, ended_on = @ended_on, notes = @notes " +
                 "WHERE project_id = @id;", connection, transaction))
             {
                 AddProjectParameters(update, project);

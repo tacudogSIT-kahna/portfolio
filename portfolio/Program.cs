@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Npgsql;
-// using portfolio.Data;                      // Task 9: remove the //
+using portfolio.Data;                      // Task 9: remove the //
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +16,9 @@ var dataSource = NpgsqlDataSource.Create(connectionString);
 builder.Services.AddSingleton(dataSource);
 
 // Repositories: one class per table, one new object per web request.
-// builder.Services.AddScoped<CourseRepository>();        // Task 9: remove the //
-// builder.Services.AddScoped<ProjectImageRepository>(); // Task 15: remove the //
-// builder.Services.AddScoped<ProjectRepository>();      // Task 15: remove the //
+builder.Services.AddScoped<CourseRepository>();        // Task 9: remove the //
+builder.Services.AddScoped<ProjectImageRepository>(); // Task 15: remove the //
+builder.Services.AddScoped<ProjectRepository>();      // Task 15: remove the //
 
 // Sign-in for the editor side. The password itself is in User Secrets, not here.
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

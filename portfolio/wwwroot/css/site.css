@@ -255,3 +255,17 @@ a.stretched {
     margin: 0;
     padding-left: 1.1rem;
 }
+
+.notes-pad {
+    white-space: pre-wrap;
+    background: #fffbe8;
+    border: 1px solid #f0e2a6;
+    border-left: 5px solid var(--gold);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    line-height: 1.6;
+}
+
+.notes-input {
+    background: #fffdf2;
+}
