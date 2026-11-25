@@ -1,0 +1,38 @@
+﻿@model List<ProjectImage>
+@{
+    var project = (Project)ViewBag.Project;
+    ViewData["Title"] = "Images of " + project.Title;
+}
+
+<nav class="meta mb-2"><a asp-controller="Projects" asp-action="Index">Projects</a> / @project.Title</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1 class="mb-0">Images</h1>
+        <p class="text-muted mb-0">@Model.Count image(s) of “@project.Title”</p>
+    </div>
+    <a asp-action="Create" asp-route-projectId="@project.ProjectId" class="btn btn-primary">Add an image</a>
+</div>
+
+<table class="table table-striped table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th style="width:6rem">Preview</th>
+            <th>URL</th>
+            <th style="width:10rem"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var img in Model)
+        {
+            <tr>
+                <td><img class="thumb" src="@img.ImageUrl" alt="" loading="lazy" /></td>
+                <td class="text-break"><a href="@img.ImageUrl" target="_blank" rel="noopener">@img.ImageUrl</a></td>
+                <td class="text-end">
+                    <a asp-action="Edit" asp-route-id="@img.ImageId" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@img.ImageId" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
