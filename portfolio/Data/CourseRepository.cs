@@ -51,6 +51,18 @@ public class CourseRepository
         return courses;
     }
 
+    // READ: one course, or null when no course has that id.
+    public async Task<Course?> GetByIdAsync(long id)
+    {
+        const string sql = SelectCourses + "WHERE c.course_id = @id GROUP BY c.course_id;";
+
+        await using var command = _dataSource.CreateCommand(sql);
+        command.Parameters.AddWithValue("id", id);
+
+        await using var reader = await command.ExecuteReaderAsync();
+        return await reader.ReadAsync() ? ReadCourse(reader) : null;
+    }
+
     // CREATE: the database chooses course_id.
     public async Task AddAsync(Course course)
     {
@@ -64,18 +76,6 @@ public class CourseRepository
         command.Parameters.AddWithValue("term_taken", course.TermTaken);
         command.Parameters.AddWithValue("description", (object?)course.Description ?? DBNull.Value);
         await command.ExecuteNonQueryAsync();
-    }
-
-    // READ: one course, or null when no course has that id.
-    public async Task<Course?> GetByIdAsync(long id)
-    {
-        const string sql = SelectCourses + "WHERE c.course_id = @id GROUP BY c.course_id;";
-
-        await using var command = _dataSource.CreateCommand(sql);
-        command.Parameters.AddWithValue("id", id);
-
-        await using var reader = await command.ExecuteReaderAsync();
-        return await reader.ReadAsync() ? ReadCourse(reader) : null;
     }
 
     // UPDATE: returns false when no course has that id.
