@@ -15,11 +15,11 @@ public class ProjectRepository
         _images = images;
     }
 
-    // Every project SELECT starts this way: positions 0 to 9 match ReadProject.
-    //  0 project_id  1 course_id  2 title  3 summary  4 video_url  5 completed_on
-    //  6 course code  7 course title  8 image count  9 cover image (the first image, or NULL)
+    // Every project SELECT starts this way: positions 0 to 11 match ReadProject.
+    //  0 project_id  1 course_id  2 title  3 summary  4 video_url  5 started_on  6 ended_on  7 notes
+    //  8 course code  9 course title  10 image count  11 cover image (the first image, or NULL)
     private const string SelectProjects =
-        "SELECT p.project_id, p.course_id, p.title, p.summary, p.video_url, p.started_on, p.ended_on, p.notes,  " +
+        "SELECT p.project_id, p.course_id, p.title, p.summary, p.video_url, p.started_on, p.ended_on, p.notes, " +
         "       c.code, c.title, COUNT(i.image_id), " +
         "       (SELECT i2.image_url FROM portfolio.project_image i2 " +
         "        WHERE i2.project_id = p.project_id ORDER BY i2.image_id LIMIT 1) " +
@@ -99,7 +99,7 @@ public class ProjectRepository
         return await reader.ReadAsync() ? ReadProject(reader) : null;
     }
 
-    // Puts the project's five columns into a command's parameters.
+    // Puts the project's seven columns into a command's parameters.
     private static void AddProjectParameters(NpgsqlCommand command, Project project)
     {
         command.Parameters.AddWithValue("course_id", project.CourseId!.Value);

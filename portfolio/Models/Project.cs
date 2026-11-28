@@ -21,9 +21,8 @@ public class Project
     [RegularExpression(Patterns.VideoUrl, ErrorMessage = "Paste a YouTube link, such as https://youtu.be/abcdefghijk")]
     public string? VideoUrl { get; set; }                   // video_url     VARCHAR(200), may be NULL
 
-    [Required(ErrorMessage = "Choose the date you finished it.")]
     [Required(ErrorMessage = "Choose the date you started it.")]
-    public DateOnly? StartedOn { get; set; }                // started_on    DATE NOT NULL
+    public DateOnly? StartedOn { get; set; }                // started_on    DATE NOT NULL (the database refuses a future date)
 
     public DateOnly? EndedOn { get; set; }                  // ended_on      DATE, may be NULL = still ongoing
 
